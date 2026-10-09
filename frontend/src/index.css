@@ -274,23 +274,6 @@ body {
   color: var(--accent-cyan);
 }
 
-.input-with-icon {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 12px;
-  font-size: 0.85rem;
-  pointer-events: none;
-}
-
-.input-with-icon input {
-  padding-left: 36px;
-}
-
 .form-group input,
 .form-group select {
   width: 100%;
@@ -303,6 +286,29 @@ body {
   font-size: 0.88rem;
   transition: all 0.2s ease;
   outline: none;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 0.95rem;
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-group .input-with-icon input {
+  padding-left: 40px;
 }
 
 .form-group input:focus {
