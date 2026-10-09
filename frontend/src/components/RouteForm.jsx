@@ -14,9 +14,9 @@ const DEFAULT_DEPARTURE = () => {
 };
 
 const SAMPLE_PRESETS = [
-  { label: 'Chicago ➔ Denver', origin: 'Chicago, IL', dest: 'Denver, CO', weight: 42000 },
-  { label: 'Dallas ➔ Atlanta', origin: 'Dallas, TX', dest: 'Atlanta, GA', weight: 32000 },
-  { label: 'Seattle ➔ Los Angeles', origin: 'Seattle, WA', dest: 'Los Angeles, CA', weight: 48000 },
+  { label: 'Chicago ➔ Denver', origin: 'Chicago, IL', dest: 'Denver, CO' },
+  { label: 'Dallas ➔ Atlanta', origin: 'Dallas, TX', dest: 'Atlanta, GA' },
+  { label: 'Seattle ➔ Los Angeles', origin: 'Seattle, WA', dest: 'Los Angeles, CA' },
 ];
 
 export default function RouteForm({ onSubmit, loading }) {
@@ -47,7 +47,6 @@ export default function RouteForm({ onSubmit, loading }) {
   const applyPreset = (preset) => {
     setOrigin(preset.origin);
     setDestination(preset.dest);
-    setLoadWeightLbs(preset.weight);
   };
 
   return (
