@@ -45,7 +45,9 @@ export default function RouteCard({ route, active, onClick }) {
       <div className="route-card__header">
         <div className="route-card__title-row">
           <span className="route-card__badge-rank">Option {rank}</span>
-          <span className="route-card__name">{name || `Route ${rank}`}</span>
+          <span className="route-card__name" title={name || `Route ${rank}`}>
+            {name || `Route ${rank}`}
+          </span>
         </div>
         <span className="route-card__risk-badge" style={badgeStyle}>
           {getRiskLabel(summary.avg_risk, summary.has_no_travel)}

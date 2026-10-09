@@ -159,7 +159,7 @@ body {
 .app-main {
   flex: 1;
   display: grid;
-  grid-template-columns: 440px 1fr;
+  grid-template-columns: 460px 1fr;
   min-height: 0;
   position: relative;
 }
@@ -175,7 +175,7 @@ body {
 }
 
 .sidebar__section {
-  padding: 20px 24px;
+  padding: 18px 20px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -444,35 +444,54 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
 .route-card__title-row {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 
 .route-card__badge-rank {
   font-size: 0.65rem;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.1);
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 4px;
   text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
 }
 
 .route-card__name {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.90rem;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .route-card__risk-badge {
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 20px;
-  font-size: 0.7rem;
+  font-size: 0.70rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .route-card__reason {
@@ -542,6 +561,8 @@ body {
 .mile-val {
   font-weight: 700;
   font-family: var(--font-mono);
+  white-space: nowrap;
+  font-size: 0.66rem;
 }
 
 .mile-lbl {

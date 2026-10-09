@@ -258,16 +258,30 @@ def rank_routes(routes):
             rec_s = sorted_routes[0]['summary']
             if s.get('has_no_travel') and not rec_s.get('has_no_travel'):
                 diff_reasons.append("Contains unsafe No-Travel conditions")
-            elif s.get('severe_miles', 0) > rec_s.get('severe_miles', 0):
-                diff_reasons.append(f"+{s['severe_miles'] - rec_s['severe_miles']:.1f} more Severe miles")
-            elif s.get('high_miles', 0) > rec_s.get('high_miles', 0):
-                diff_reasons.append(f"+{s['high_miles'] - rec_s['high_miles']:.1f} more High risk miles")
-            elif s.get('avg_risk', 0) > rec_s.get('avg_risk', 0):
-                diff_reasons.append(f"Higher average risk ({s['avg_risk']:.1f} vs {rec_s['avg_risk']:.1f})")
-            elif route.get('duration_minutes', 0) > sorted_routes[0].get('duration_minutes', 0):
-                diff_time = (route['duration_minutes'] - sorted_routes[0]['duration_minutes']) / 60
-                diff_reasons.append(f"+{diff_time:.1f} hrs longer travel time")
+            if s.get('severe_miles', 0) > rec_s.get('severe_miles', 0):
+                diff_reasons.append(f"+{s['severe_miles'] - rec_s['severe_miles']:.1f} mi Severe weather")
+            if s.get('high_miles', 0) > rec_s.get('high_miles', 0):
+                diff_reasons.append(f"+{s['high_miles'] - rec_s['high_miles']:.1f} mi High risk weather")
+            if s.get('moderate_miles', 0) > rec_s.get('moderate_miles', 0) and s.get('severe_miles', 0) == 0 and s.get('high_miles', 0) == 0:
+                diff_reasons.append(f"+{s['moderate_miles'] - rec_s['moderate_miles']:.1f} mi Moderate weather exposure")
+            
+            # Compare average risk if there is a noticeable gap
+            avg_diff = s.get('avg_risk', 0) - rec_s.get('avg_risk', 0)
+            if avg_diff >= 0.15:
+                diff_reasons.append(f"Higher avg risk ({s['avg_risk']:.1f} vs {rec_s['avg_risk']:.1f})")
 
-            route['recommendation_reason'] = "Alternative route: " + (", ".join(diff_reasons) if diff_reasons else "Higher risk or travel time")
+            # Duration comparison
+            if route.get('duration_minutes', 0) > sorted_routes[0].get('duration_minutes', 0):
+                diff_mins = route['duration_minutes'] - sorted_routes[0]['duration_minutes']
+                if diff_mins >= 30:
+                    diff_hours = diff_mins / 60.0
+                    diff_reasons.append(f"+{diff_hours:.1f} hrs longer transit")
+
+            # Distance comparison if duration is close
+            if not diff_reasons and route.get('distance_miles', 0) > sorted_routes[0].get('distance_miles', 0):
+                diff_dist = route['distance_miles'] - sorted_routes[0]['distance_miles']
+                diff_reasons.append(f"+{diff_dist:.0f} mi longer route")
+
+            route['recommendation_reason'] = "Alternative route: " + (", ".join(diff_reasons) if diff_reasons else "Alternative corridor")
 
     return sorted_routes
