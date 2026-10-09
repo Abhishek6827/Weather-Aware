@@ -24,3 +24,9 @@ class RouteRequestSerializer(serializers.Serializer):
         required=False,
         help_text='Checkpoint sampling interval in miles (10, 25, or 50 miles)'
     )
+    weather_scenario = serializers.ChoiceField(
+        choices=['live', 'high_wind_38', 'storm_48', 'gale_58', 'blizzard'],
+        default='live',
+        required=False,
+        help_text='Weather mode: live satellite data or specific assessment test scenarios'
+    )

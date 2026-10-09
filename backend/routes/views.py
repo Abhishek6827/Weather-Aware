@@ -37,6 +37,7 @@ def calculate_routes(request):
     departure_dt = data['departure_datetime']
     load_lbs = data['load_weight_lbs']
     interval_miles = data.get('interval_miles', 25)
+    weather_scenario = data.get('weather_scenario', 'live')
 
     try:
         # 1. Geocode origin and destination
@@ -70,6 +71,7 @@ def calculate_routes(request):
                 checkpoints,
                 departure_dt,
                 route['duration_minutes'],
+                scenario=weather_scenario,
             )
 
             # Calculate weather risk per checkpoint according to weather thresholds and load weight rules
@@ -104,6 +106,7 @@ def calculate_routes(request):
             corridor_checkpoints,
             departure_dt,
             hours=48,
+            scenario=weather_scenario,
         )
 
         return Response({
@@ -113,6 +116,7 @@ def calculate_routes(request):
             'departure': departure_dt.isoformat(),
             'load_weight_lbs': load_lbs,
             'interval_miles': interval_miles,
+            'weather_scenario': weather_scenario,
             'routes': ranked_routes,
             'corridor_forecast': corridor_forecast,
         })

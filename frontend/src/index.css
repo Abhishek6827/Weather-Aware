@@ -375,6 +375,37 @@ body {
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.25);
 }
 
+.scenario-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.scenario-select:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px var(--accent-blue-glow);
+}
+
+.scenario-info-banner {
+  background: rgba(59, 130, 246, 0.12);
+  border-left: 3px solid var(--accent-blue);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #93c5fd;
+  margin-top: 4px;
+}
+
 .btn-primary {
   width: 100%;
   padding: 12px 18px;

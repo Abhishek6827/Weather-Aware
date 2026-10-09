@@ -25,6 +25,7 @@ export default function RouteForm({ onSubmit, loading }) {
   const [departureDateTime, setDepartureDateTime] = useState(DEFAULT_DEPARTURE);
   const [loadWeightLbs, setLoadWeightLbs] = useState(42000);
   const [intervalMiles, setIntervalMiles] = useState(25);
+  const [weatherScenario, setWeatherScenario] = useState('live');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,6 +40,7 @@ export default function RouteForm({ onSubmit, loading }) {
       departureDateTime: isoDateTime,
       loadWeightLbs: parseFloat(loadWeightLbs),
       intervalMiles: parseInt(intervalMiles, 10),
+      weatherScenario,
     });
   };
 
@@ -155,6 +157,43 @@ export default function RouteForm({ onSubmit, loading }) {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Weather Scenario / Assessment Load Rule Tester */}
+      <div className="form-group">
+        <label htmlFor="weather-scenario">
+          Weather Data Mode
+          <span className="label-hint">Assessment Rule Testing</span>
+        </label>
+        <select
+          id="weather-scenario"
+          className="scenario-select"
+          value={weatherScenario}
+          onChange={(e) => setWeatherScenario(e.target.value)}
+        >
+          <option value="live">🌐 Live Satellite Forecast (Open-Meteo API)</option>
+          <option value="high_wind_38">💨 Crosswind Advisory (38 mph) — [Test Rule: &gt;40k lb &rarr; Severe]</option>
+          <option value="storm_48">🌪️ Severe Windstorm (48 mph) — [Test Rule: &gt;30k lb &rarr; No Travel]</option>
+          <option value="gale_58">⛔ Gale Force Storm (58 mph) — [Test Rule: &ge;55 mph &rarr; No Travel]</option>
+          <option value="blizzard">❄️ Winter Blizzard (2.5 in/h snow) — [Test Rule: Severe Snow Hazard]</option>
+        </select>
+
+        {weatherScenario !== 'live' && (
+          <div className="scenario-info-banner">
+            {weatherScenario === 'high_wind_38' && (
+              <span>⚡ <strong>Testing Rule 3:</strong> 35–44 mph wind. Loads &gt; 40,000 lbs will escalate to <strong>Severe</strong>.</span>
+            )}
+            {weatherScenario === 'storm_48' && (
+              <span>⚡ <strong>Testing Rule 2:</strong> 45–54 mph wind. Loads &gt; 30,000 lbs will trigger <strong>⛔ No Travel</strong>.</span>
+            )}
+            {weatherScenario === 'gale_58' && (
+              <span>⚡ <strong>Testing Rule 1:</strong> &ge; 55 mph gale wind. Triggers <strong>⛔ No Travel</strong> for any load weight.</span>
+            )}
+            {weatherScenario === 'blizzard' && (
+              <span>⚡ <strong>Testing Snow Rule:</strong> 2.0–3.0 in/hr snowfall rate triggers <strong>Severe Winter Hazard</strong>.</span>
+            )}
+          </div>
+        )}
       </div>
 
       <button

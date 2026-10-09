@@ -46,10 +46,11 @@ def _weather_code_to_text(code):
     return f"{icon} {desc}"
 
 
-def fetch_weather_at_checkpoints(checkpoints, departure_dt, duration_minutes):
+def fetch_weather_at_checkpoints(checkpoints, departure_dt, duration_minutes, scenario='live'):
     """
     Fetch weather for each checkpoint at the truck's estimated arrival time.
     Uses chunked batch queries for optimal network performance.
+    Applies test scenario modifiers when specified.
     """
     if not checkpoints:
         return []
@@ -72,7 +73,38 @@ def fetch_weather_at_checkpoints(checkpoints, departure_dt, duration_minutes):
         if 'arrival_dt' in cp:
             del cp['arrival_dt']
 
+    # Apply assessment simulation scenario if specified
+    if scenario and scenario != 'live':
+        _apply_scenario_to_checkpoints(checkpoints, scenario)
+
     return checkpoints
+
+
+def _apply_scenario_to_checkpoints(checkpoints, scenario):
+    """Apply simulated weather conditions to checkpoints for testing assessment rules."""
+    for i, cp in enumerate(checkpoints):
+        f = cp.get('fraction', 0.5)
+        # Apply storm along the mid-route corridor (fraction 0.20 to 0.85)
+        in_storm = 0.20 <= f <= 0.85
+        w = cp['weather']
+
+        if scenario == 'high_wind_38':
+            if in_storm:
+                w['wind_mph'] = round(38.0 + (i % 5) * 1.5, 1)  # 38 to 44 mph
+                w['description'] = '💨 High Crosswinds (Advisory)'
+        elif scenario == 'storm_48':
+            if in_storm:
+                w['wind_mph'] = round(48.0 + (i % 4) * 1.5, 1)  # 48 to 52.5 mph
+                w['description'] = '🌪️ Severe Windstorm (Warning)'
+        elif scenario == 'gale_58':
+            if in_storm:
+                w['wind_mph'] = round(56.0 + (i % 4) * 2.0, 1)  # 56 to 62 mph
+                w['description'] = '⛔ Gale Force Crosswinds'
+        elif scenario == 'blizzard':
+            if in_storm:
+                w['snow_in_hr'] = round(2.5 + (i % 4) * 0.3, 2)  # 2.5 to 3.4 in/hr
+                w['temp_f'] = 22.0
+                w['description'] = '❄️ Severe Winter Blizzard'
 
 
 def _enrich_checkpoint_chunk(chunk):
@@ -171,7 +203,7 @@ def _enrich_checkpoint_chunk(chunk):
         }
 
 
-def fetch_corridor_forecast(checkpoints, departure_dt, hours=48):
+def fetch_corridor_forecast(checkpoints, departure_dt, hours=48, scenario='live'):
     """
     Fetch full 0-48h forecast series along the trip corridor for the heatmap slider.
     Samples key waypoints evenly along the route corridor.
@@ -244,14 +276,34 @@ def fetch_corridor_forecast(checkpoints, departure_dt, hours=48):
             t = _safe_get(temps, t_idx, 60.0)
             c = int(_safe_get(codes, t_idx, 0))
 
+            # Modify values if scenario simulation active
+            wind_val = round(float(w), 1)
+            rain_val = round(float(r), 2)
+            snow_val = round(float(s_cm) / 2.54, 2)
+            desc_val = _weather_code_to_text(c)
+
+            if scenario == 'high_wind_38':
+                wind_val = max(wind_val, round(38.0 + (h % 5) * 1.2, 1))
+                desc_val = '💨 High Crosswinds (Advisory)'
+            elif scenario == 'storm_48':
+                wind_val = max(wind_val, round(48.0 + (h % 4) * 1.5, 1))
+                desc_val = '🌪️ Severe Windstorm (Warning)'
+            elif scenario == 'gale_58':
+                wind_val = max(wind_val, round(56.0 + (h % 4) * 2.0, 1))
+                desc_val = '⛔ Gale Force Crosswinds'
+            elif scenario == 'blizzard':
+                snow_val = max(snow_val, round(2.5 + (h % 4) * 0.25, 2))
+                t = 22.0
+                desc_val = '❄️ Severe Winter Blizzard'
+
             hourly_series.append({
                 'hour_offset': h,
                 'time': target_iso,
-                'wind_mph': round(float(w), 1),
-                'rain_in_hr': round(float(r), 2),
-                'snow_in_hr': round(float(s_cm) / 2.54, 2),
+                'wind_mph': wind_val,
+                'rain_in_hr': rain_val,
+                'snow_in_hr': snow_val,
                 'temp_f': round(float(t), 1),
-                'description': _weather_code_to_text(c),
+                'description': desc_val,
             })
 
         corridor_result.append({
