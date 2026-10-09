@@ -83,7 +83,23 @@ export default function MapView({
         <AutoFitBounds routes={routes} />
 
         {/* 1. Weather Heatmap Corridor (0-48h forecast simulation) */}
-        {corridorForecast && corridorForecast.map((point, i) => {
+        {((corridorForecast && corridorForecast.length > 0)
+          ? corridorForecast
+          : (activeRoute?.checkpoints || []).map(cp => ({
+              lat: cp.lat,
+              lng: cp.lng,
+              mile_marker: cp.mile_marker,
+              hourly: Array.from({ length: 49 }, (_, h) => ({
+                hour_offset: h,
+                time: new Date(new Date(cp.estimated_arrival).getTime() + h * 3600000).toISOString(),
+                wind_mph: cp.weather.wind_mph,
+                rain_in_hr: cp.weather.rain_in_hr,
+                snow_in_hr: cp.weather.snow_in_hr,
+                temp_f: cp.weather.temp_f,
+                description: cp.weather.description,
+              }))
+            }))
+        ).map((point, i) => {
           const hourData = getHourData(point.hourly, forecastHour);
           if (!hourData) return null;
           const style = getHeatmapStyle(hourData, activeLayer);

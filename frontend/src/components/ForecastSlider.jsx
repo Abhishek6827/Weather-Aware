@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 
 export default function ForecastSlider({
   corridorForecast,
+  checkpoints = [],
   forecastHour,
   onHourChange,
   departureTime,
@@ -47,7 +48,8 @@ export default function ForecastSlider({
     });
   }, [forecastHour, departureTime]);
 
-  if (!corridorForecast || corridorForecast.length === 0) return null;
+  const hasData = (corridorForecast && corridorForecast.length > 0) || (checkpoints && checkpoints.length > 0);
+  if (!hasData) return null;
 
   return (
     <div className="forecast-slider-container">

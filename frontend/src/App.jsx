@@ -131,14 +131,17 @@ export default function App() {
             activeLayer={activeLayer}
           />
 
-          <ForecastSlider
-            corridorForecast={routeData?.corridor_forecast}
-            forecastHour={forecastHour}
-            onHourChange={setForecastHour}
-            departureTime={routeData?.departure}
-            activeLayer={activeLayer}
-            onLayerChange={setActiveLayer}
-          />
+          {routes.length > 0 && (
+            <ForecastSlider
+              corridorForecast={routeData?.corridor_forecast}
+              checkpoints={recommendedRoute?.checkpoints || []}
+              forecastHour={forecastHour}
+              onHourChange={setForecastHour}
+              departureTime={routeData?.departure}
+              activeLayer={activeLayer}
+              onLayerChange={setActiveLayer}
+            />
+          )}
         </div>
       </main>
     </div>
