@@ -1,0 +1,14 @@
+import axios from 'axios';
+
+const API_BASE = 'http://127.0.0.1:8000/api';
+
+export async function calculateRoutes({ origin, destination, departureDateTime, loadWeightLbs, intervalMiles }) {
+  const response = await axios.post(`${API_BASE}/routes/`, {
+    origin,
+    destination,
+    departure_datetime: departureDateTime,
+    load_weight_lbs: loadWeightLbs,
+    interval_miles: intervalMiles || 25,
+  });
+  return response.data;
+}
