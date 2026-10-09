@@ -2,7 +2,7 @@
 Unit and integration tests for Weather-Aware Truck Routing.
 Verifies all assessment risk thresholds, rollover load rules, and ranking logic.
 """
-from django.test import TestCase
+from unittest import TestCase
 from routes.services.risk import (
     RISK_LOW, RISK_MODERATE, RISK_HIGH, RISK_SEVERE, RISK_NO_TRAVEL,
     classify_wind, classify_rain, classify_snow,
