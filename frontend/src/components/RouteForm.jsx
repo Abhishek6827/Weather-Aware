@@ -20,10 +20,10 @@ const SAMPLE_PRESETS = [
 ];
 
 export default function RouteForm({ onSubmit, loading }) {
-  const [origin, setOrigin] = useState('Chicago, IL');
-  const [destination, setDestination] = useState('Denver, CO');
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
   const [departureDateTime, setDepartureDateTime] = useState(DEFAULT_DEPARTURE);
-  const [loadWeightLbs, setLoadWeightLbs] = useState(42000);
+  const [loadWeightLbs, setLoadWeightLbs] = useState('');
   const [intervalMiles, setIntervalMiles] = useState(25);
   const [weatherScenario, setWeatherScenario] = useState('live');
 
@@ -114,12 +114,12 @@ export default function RouteForm({ onSubmit, loading }) {
         <div className="form-group">
           <label htmlFor="load-weight">
             Load Weight (lbs)
-            {loadWeightLbs > 40000 && (
+            {Boolean(loadWeightLbs && Number(loadWeightLbs) > 40000) && (
               <span className="risk-indicator-tag tag-severe" title=">40,000 lbs: Wind 35-44mph escalates to Severe">
                 Heavy Load
               </span>
             )}
-            {loadWeightLbs > 30000 && loadWeightLbs <= 40000 && (
+            {Boolean(loadWeightLbs && Number(loadWeightLbs) > 30000 && Number(loadWeightLbs) <= 40000) && (
               <span className="risk-indicator-tag tag-warn" title=">30,000 lbs: Wind 45-54mph triggers No Travel">
                 Med Load
               </span>
