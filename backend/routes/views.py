@@ -11,6 +11,18 @@ from .services.risk import calculate_checkpoint_risk, calculate_route_summary, r
 logger = logging.getLogger(__name__)
 
 
+@api_view(['GET'])
+def health_check(request):
+    return Response({
+        'status': 'online',
+        'service': 'Weather-Aware Truck Routing API',
+        'version': '1.0.0',
+        'endpoints': {
+            'calculate_routes': '/api/routes/'
+        }
+    })
+
+
 @api_view(['POST'])
 def calculate_routes(request):
     """
